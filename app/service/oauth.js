@@ -16,14 +16,14 @@ class OauthService extends Service {
   async createToken(borrower) {
     const accessToken = {
       accessToken: uuid.v1(),
-      accessTokenExpiresAt: moment().add(this.config.oauth.accessTokenLifetime, 's').format('YYYY-MM-DD'),
+      accessTokenExpiresAt: moment().add(this.config.oauth.accessTokenLifetime, 's').format('YYYY-MM-DD HH:mm:ss'),
       client: this.config.oauth.id,
       // TODO 确定accessToken中具体保存什么内容
       user: JSON.stringify(borrower),
     };
     const refreshToken = {
       refreshToken: uuid.v1(),
-      refreshTokenExpiresAt: moment().add(this.config.oauth.refreshTokenLifetime, 's').format('YYYY-MM-DD'),
+      refreshTokenExpiresAt: moment().add(this.config.oauth.refreshTokenLifetime, 's').format('YYYY-MM-DD HH:mm:ss'),
       client: this.config.oauth.id,
       user: borrower.id,
     };

@@ -7,16 +7,19 @@ async function authenticate(ctx, next) {
   ctx.logger.debug(Authorization);
   if (Authorization) {
     const accessToken = Authorization.split(' ')[1] || '';
+    ctx.logger.debug(accessToken);
+    ctx.logger.debug(ctx.app.config.oauth.id);
     // TODO 内存中保存一份accessTokenInfo，先查找内存中的内容
-    const accessTokenInfo = await this.ctx.app.mysql.get('oauth_access_token', {
+    const accessTokenInfo = await ctx.app.mysql.get('oauth_access_token', {
       accessToken,
-      client: ctx.config.oauth.id,
+      client: ctx.app.config.oauth.id,
     });
-    if (accessToken && accessTokenInfo.accessTokenExpiresAt > moment().format('YYYY-MM-DD HH:mm:ss')) {
-      this.ctx.state.borrower = JSON.parse(accessTokenInfo.user);
+    ctx.logger.debug(accessTokenInfo);
+    if (accessTokenInfo && accessTokenInfo.accessTokenExpiresAt > moment().format('YYYY-MM-DD HH:mm:ss')) {
+      ctx.state.borrower = JSON.parse(accessTokenInfo.user);
       await next();
     } else {
-      this.ctx.body = {
+      ctx.body = {
         code: 400,
         message: '无效token',
       };
